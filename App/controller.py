@@ -45,9 +45,8 @@ def loadData(catalog, size_videos: int):
     estructura de datos
     """
     loadVideos(catalog, size_videos)
-    loadCategorias(catalog)
+#    loadCategorias(catalog)
     loadPaises(catalog)
-    #sortVideos(catalog, merge, vistas)
 
 
 def loadVideos(catalog, size_videos: int):
@@ -81,7 +80,7 @@ def loadVideos(catalog, size_videos: int):
             break
 
 
-def loadCategorias(catalog):
+'''def loadCategorias(catalog):
     """
     Carga las categorias del archivo.
     """
@@ -92,7 +91,7 @@ def loadCategorias(catalog):
         info_deseada = ['id','name']
         for info in info_deseada:
             cate_agregar[info] = str(cate_leida[info]).lower()
-        model.addCategoria(catalog, cate_agregar)
+        model.addCategoria(catalog, cate_agregar)'''
 
 def loadPaises(catalog):
     """
@@ -121,9 +120,9 @@ def subListVideos_porPais(tad_lista, pais):
     pais = pais.lower()
     return model.subListVideos_porPais(tad_lista, pais)
 
-def subListVideos_porCategoria(tad_lista, categoria_id):
+'''def subListVideos_porCategoria(tad_lista, categoria_id):
     categoria_id = str(categoria_id)
-    return model.subListVideos_porCategoria(tad_lista, categoria_id)
+    return model.subListVideos_porCategoria(tad_lista, categoria_id)'''
 
 
 def getMostViewed(catalog, number, pais, categoria_id, metodo="merge"):
@@ -149,9 +148,9 @@ def primer_video(catalog):
 def pais_presente(catalog, pais):
     return model.pais_presente(catalog, pais)
 
-def categoria_id_presente(catalog, categoria_id):
+'''def categoria_id_presente(catalog, categoria_id):
     categoria_id = str(categoria_id)
-    return model.categoria_id_presente(catalog, categoria_id)
+    return model.categoria_id_presente(catalog, categoria_id)'''
 
 
 def ObtenerVideosDistintos(tad_lista):
@@ -161,9 +160,6 @@ def ObtenerVideosDistintos(tad_lista):
     sortVideos(tad_lista, 'merge', "video_id")
     return model.ObtenerVideosDistintos(tad_lista)
 
-def getTrendingByCategory(catalog):
-    category = model.getTrendingByCategory(catalog)
-    return category
 
 def getMostTrending(catalog, pais):
     sublista = subListVideos_porPais(catalog['videos'], pais)

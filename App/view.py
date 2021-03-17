@@ -98,13 +98,13 @@ while True:
             loadData(catalog, cantidad_datos)
             time_2 = time.process_time()
             print('Videos cargados: ' + str(lt.size(catalog['videos'])))
-            print('Categorias cargadas: ' + str(lt.size(catalog['categorias'])))
+'''            print('Categorias cargadas: ' + str(lt.size(catalog['categorias'])))'''
             print('Milisegundos de carga :{}'.format(str((time_2-time_1)*1000)))
-            print('Las categorias cargadas son :')
+'''            print('Las categorias cargadas son :')
             posicion_imprimir = 1
             for cate in lt.iterator(catalog['categorias']):
                 print(str(posicion_imprimir),": " + "ID: " + cate["id"] + "  ,  Nombre: " + cate["name"])
-                posicion_imprimir += 1
+                posicion_imprimir += 1'''
             primer_video = controller.primer_video(catalog)
             print('El primer video cargado es:')
             print("Titulo: " + primer_video["title"] + ", Canal: " + primer_video["channel_title"] + ", Fecha de tendencia: " + \
