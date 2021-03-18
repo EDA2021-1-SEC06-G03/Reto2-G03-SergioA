@@ -50,13 +50,24 @@ def newCatalog(estructura):
     una lista vacia para los generos y una lista vacia para la asociación
     generos y libros. Retorna el catalogo inicializado.
     """
-    catalog = {'videos': None,
-               'categorias': None,
+    catalog = {'videos': None, 'VideosPorId':None,
+               'VideosPorCategoriasId': None,
                'paises': None}
     catalog['videos'] = lt.newList(estructura)
-    catalog['categorias'] = lt.newList(datastructure = 'ARRAY_LIST')
+    #lista de videos donde un video es una linea del csv
+    catalog['VideosPorCategoriasId'] = mp.newMap(numelements=37, maptype='CHAINING', loadfactor=4.0,
+     comparefunction=MAPcompareCategoriesById)
+    #map : hash table, donde las llaves son dadas por las categorias y los valores de cada llave son videos,
+    #  donde un video es una linea del csv (los mismos elementos de catalog['videos'])
+
+    catalog['VideosPorId'] = mp.newMap(numelements=380000, maptype='PROBING', loadfactor=0.5,
+     comparefunction=MAPcompareVideosById)
+#map : hash table, donde las llaves son dadas por las video_id y los valores de cada llave son videos,
+#  donde un video es una linea del csv (los mismos elementos de catalog['videos'])
+#en otras palabras estos son los videos unicos
+
+#antiguo:
     catalog['paises'] = lt.newList(datastructure = 'ARRAY_LIST')
-    catalog['videos_distintos'] = lt.newList(datastructure = 'ARRAY_LIST')
 
     return catalog
 
@@ -65,11 +76,53 @@ def newCatalog(estructura):
 def addVideo(catalog, video):
     # Se adiciona el video a la lista de videos
     lt.addLast(catalog['videos'], video)
+    mp.put(catalog['VideosPorId'], video['video_id'], video)
+    addVideo_a_Categoria(catalog, video)
 
-def addCategoria(catalog, cate):
-    # Se adiciona la categoria a la lista de categorias
-    lt.addLast(catalog['categorias'], cate)
+def addVideo_a_Categoria(catalog, video):
+    """
+    Esta funcion adiciona un video a la lista de libros que
+    son de la misma categoria especifica.
+    Las categorias se guardan en un Map, donde la llave es la categoria
+    y el valor es la lista de videos de esa categoria.
+    """
+    
+    categorias = catalog['VideosPorCategoriasId']
+#el video solo trae el id de la categoria, toca recorrer la lista de categorias para coger el nombre también
+    categoria_id = video['category_id']
+    
+    entry = mp.get(categorias, categoria_id)
+    videos_de_categoria = me.getValue(entry)
+    
+    lt.addLast(videos_de_categoria['videos'], video)
 
+def addCategoria(catalog, categoria):
+#esta categoria de entrada es un dicci
+#    categoria_id = categoria['id']
+#    nombre_categoria = categoria['name']
+    categorias = catalog['VideosPorCategoriasId']
+    categoria_id = categoria['id']
+    existCate = mp.contains(categorias, categoria_id)
+    if not existCate:
+        videos_de_categoria = nuevaCategoria(categoria)
+        mp.put(categorias, categoria_id, videos_de_categoria)
+
+def nuevaCategoria(categoria):
+#esta categoria de entrada es un dicci
+#    categoria_id = categoria['id']
+#    nombre_categoria = categoria['name']
+    """
+    Esta funcion crea la estructura de videos asociados
+    a una categoria.
+    """
+    
+    entry = {'categoria_id': "", "nombre_categoria": "", "videos": None}
+    entry['categoria_id'] = categoria['id']
+    entry['nombre_categoria'] = categoria['name']
+    entry['videos'] = lt.newList('SINGLE_LINKED', compareCategories)
+    return entry
+
+#antiguo:
 def addPais(catalog, pais):
     # Se adiciona el pais a la lista de paises
     lt.addLast(catalog['paises'], pais)
@@ -78,6 +131,8 @@ def addPais(catalog, pais):
 
 
 # Funciones para creacion de datos
+
+#antiguo
 def loadPaises(catalog):
     for video in lt.iterator(catalog['videos']):
         pais = str(video['country']).lower()
@@ -85,6 +140,7 @@ def loadPaises(catalog):
             addPais(catalog, pais)
 
 # Funciones de consulta
+#antiguo
 def subListVideos(catalog, pos, number):
     """
     Retorna sublista de videos
@@ -92,20 +148,20 @@ def subListVideos(catalog, pos, number):
     videos = catalog["videos"]
     
     return lt.subList(videos, pos, number)
-
+#antiguo
 def primer_video(catalog):
     return lt.firstElement(catalog['videos'])
-
+#antiguo
 def pais_presente(catalog, pais:str):
     return lt.isPresent(catalog['paises'], pais)
-
-def categoria_id_presente(catalog, categoria_id:str):
+#antiguo
+'''def categoria_id_presente(catalog, categoria_id:str):
     id_presente = False
     for categoria in lt.iterator(catalog['categorias']):
         if categoria['id'] == categoria_id:
             id_presente = True
-    return id_presente
-
+    return id_presente'''
+#antiguo
 def subListVideos_porCategoria(tad_lista, categoria_id:str):
     sublist = lt.newList(datastructure = tad_lista['type'])
     for video in lt.iterator(tad_lista):
@@ -113,7 +169,7 @@ def subListVideos_porCategoria(tad_lista, categoria_id:str):
         if str(video['category_id']) == categoria_id:
             lt.addLast(sublist, video)
     return sublist
-
+#antiguo
 def subListVideos_porPais(tad_lista, pais:str):
     sublist = lt.newList(datastructure = tad_lista['type'])
     for video in lt.iterator(tad_lista):
@@ -121,28 +177,7 @@ def subListVideos_porPais(tad_lista, pais:str):
             lt.addLast(sublist, video)
     return sublist
 
-def getTrendingByCategory(vid):
-    size = lt.size(vid)
-    trending_video="Ninguno"
-    trending = 1
-    i = 1
-    j = 2
-    while i <= size and j <= size:
-        video = lt.getElement(ord_videos, i)
-        if video['title'] == lt.getElement(vid, j)['title']: 
-            while ii <= size and (video['title'] == lt.getElement(ord_videos, ii)['title']):
-                video['dias_t'] += 1
-                j += 1 
-            i = j + 1
-            j += 2
-        else:
-            i += 1
-            j += 1
-        if video['dias_t'] > trending:
-            trending = video['dias_t']
-            trending_video = video
-    return trending_video
-
+#antiguo
 def ObtenerVideosDistintos(tad_lista):
     videos_distintos = lt.newList(datastructure = 'ARRAY_LIST')
     primero = lt.firstElement(tad_lista)
@@ -167,21 +202,10 @@ def ObtenerVideosDistintos(tad_lista):
         leidos += 1
     return videos_distintos
 
-'''def getRepeticiones(sublista, distintos_en_sublista):
-    for video_unico in lt.iterator(distintos_en_sublista):
-        encontrado = False
-        repeticiones = 0
-        for video in lt.iterator(sublista):
-            if video['video_id'] == video_unico['video_id']:
-                encontrado = True
-                repeticiones += 1
-            else:
-                if encontrado == True:
-                    break
-        video_unico['repeticiones'] = repeticiones'''
 
 
 
+#antiguo
 def getMaxReps(sublista):
     if not lt.isEmpty(sublista):
         maximo_valor = 0
@@ -193,7 +217,7 @@ def getMaxReps(sublista):
         return maximo_apuntador
     else:
         return None
-
+#antiguo
 def video_tiene_tag(video, tag:str):
     encontrado = False
     for t in lt.iterator(video['tags']):
@@ -203,7 +227,7 @@ def video_tiene_tag(video, tag:str):
 
     return encontrado
 
-
+#antiguo
 def subListVideos_porTag(tad_lista, tag:str):
     sublist = lt.newList(datastructure = tad_lista['type'])
     for video in lt.iterator(tad_lista):
@@ -217,21 +241,56 @@ def subListVideos_porTag(tad_lista, tag:str):
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
-
+#antiguo
 def cmpVideosByViews(video1, video2):
     return (int(video1['views']) > int(video2['views']))
-
+#antiguo
 def cmpVideosByVideoID(video1, video2):
     return (str(video1['video_id']) > str(video2['video_id']))
-
+#antiguo
 def cmpVideosByLikes(video1, video2):
     return (int(video1['likes']) > int(video2['likes']))
+
+
+def MAPcompareVideosById(id, entry):
+    """
+    Compara dos ids de videos, id es un identificador
+    y entry una pareja llave-valor
+    """
+    identry = me.getKey(entry)
+    if (id == identry):
+        return 0
+    elif (id > identry):
+        return 1
+    else:
+        return -1
+
+def MAPcompareCategoriesById(keyname, category):
+    """
+    Compara dos nombres de autor. El primero es una cadena
+    y el segundo un entry de un map
+    """
+    cat_entry = me.getKey(category)
+    if (keyname == cat_entry):
+        return 0
+    elif (keyname > cat_entry):
+        return 1
+    else:
+        return -1
+
+def compareCategories(cate1, cate2):
+    if (cate1 == cate2):
+        return 0
+    elif (cate1 > cate2):
+        return 1
+    else:
+        return -1
 
 #def cmpVideosBy_criterio(video1, video2):
 #    return (float(video1['criterio']) > float(video2['criterio']))
 
 # Funciones de ordenamiento
-
+#antiguo, pero creo que no se tendra que editar
 def sortList(tad_lista, metodo, orden='vistas'):
     if orden == "vistas":
         funcion_comp = cmpVideosByViews

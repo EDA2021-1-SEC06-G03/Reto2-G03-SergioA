@@ -44,8 +44,8 @@ def loadData(catalog, size_videos: int):
     Carga los datos de los archivos y cargar los datos en la
     estructura de datos
     """
+    loadCategorias(catalog)
     loadVideos(catalog, size_videos)
-#    loadCategorias(catalog)
     loadPaises(catalog)
 
 
@@ -80,7 +80,7 @@ def loadVideos(catalog, size_videos: int):
             break
 
 
-'''def loadCategorias(catalog):
+def loadCategorias(catalog):
     """
     Carga las categorias del archivo.
     """
@@ -91,7 +91,8 @@ def loadVideos(catalog, size_videos: int):
         info_deseada = ['id','name']
         for info in info_deseada:
             cate_agregar[info] = str(cate_leida[info]).lower()
-        model.addCategoria(catalog, cate_agregar)'''
+        model.addCategoria(catalog, cate_agregar)
+        
 
 def loadPaises(catalog):
     """
