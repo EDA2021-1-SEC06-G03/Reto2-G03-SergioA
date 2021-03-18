@@ -72,13 +72,23 @@ def newCatalog(estructura):
     return catalog
 
 # Funciones para agregar informacion al catalogo
-
+#nuevo
 def addVideo(catalog, video):
     # Se adiciona el video a la lista de videos
     lt.addLast(catalog['videos'], video)
-    mp.put(catalog['VideosPorId'], video['video_id'], video)
+# FALTA IMPLEMENTAR    addVideoUnico(catlog, video)
     addVideo_a_Categoria(catalog, video)
 
+#AQUI: HAY QUE DECIDIR CON QUE INFO SE VA A QUEDAR LA INSTANCIA UNICA(O COLAPSADA) DEL VIDEO GUARDADA AQUI(VIDEOSPORID)
+#LIKES, VIEWS Y NUMERICOS ETC  es facil: coger el valor mas grande
+#necesito decidir como guardar la info de las fechas y paises tendencia(¿para cada video hacer lista de fechas y paises? 
+# pero... como se relacionarian las fechas con su pais correspondiente?)
+def addVideoUnico(catalog, video):
+    videosUnicos = catalog['VideosPorId']
+#esta funcion puede ser algo parecido a como está la funcion ObtenerVideosUnicos
+    if 
+    mp.put(videosUnicos, video['video_id'], video)
+#nuevo
 def addVideo_a_Categoria(catalog, video):
     """
     Esta funcion adiciona un video a la lista de libros que
@@ -95,7 +105,7 @@ def addVideo_a_Categoria(catalog, video):
     videos_de_categoria = me.getValue(entry)
     
     lt.addLast(videos_de_categoria['videos'], video)
-
+#nuevo
 def addCategoria(catalog, categoria):
 #esta categoria de entrada es un dicci
 #    categoria_id = categoria['id']
@@ -106,7 +116,7 @@ def addCategoria(catalog, categoria):
     if not existCate:
         videos_de_categoria = nuevaCategoria(categoria)
         mp.put(categorias, categoria_id, videos_de_categoria)
-
+#nuevo
 def nuevaCategoria(categoria):
 #esta categoria de entrada es un dicci
 #    categoria_id = categoria['id']
