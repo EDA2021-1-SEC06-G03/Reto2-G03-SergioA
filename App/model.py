@@ -148,6 +148,11 @@ def subListVideos(catalog, pos, number):
     videos = catalog["videos"]
     
     return lt.subList(videos, pos, number)
+
+#nuevo
+def subListVideos2(lista, pos, number):
+    return lt.subList(lista, pos, number)
+
 #antiguo
 def primer_video(catalog):
     return lt.firstElement(catalog['videos'])

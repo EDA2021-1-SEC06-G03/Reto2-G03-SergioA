@@ -308,7 +308,6 @@ los datos una vez de los archivos. \n Para recargar, reinicia la aplicación.')
         print('Milisegundos de carga :{}'.format(str((time_2-time_1)*1000)))
         
     elif int(inputs[0]) == 6:
-        n = lt.size(catalog['videos'])
         print("Buscando en la categoria con nombre: \n")
         ha_escogido_categoria = False
         while not ha_escogido_categoria:
@@ -319,6 +318,8 @@ los datos una vez de los archivos. \n Para recargar, reinicia la aplicación.')
                 categoria_id = id_presente[1]
             else:
                 print("Por favor ingresa una categoria disponible.")
+        n = lt.size(controller.subListVideos_porCategoria(catalog, categoria_id))
+        print("Hay {} videos en la categoria".format(str(n)))
         print('Cuatos videos deseas procesar:\n')
         ha_escogido_tamaño = False
         while not ha_escogido_tamaño:
@@ -326,7 +327,7 @@ los datos una vez de los archivos. \n Para recargar, reinicia la aplicación.')
             if tamaño <= n:
                 ha_escogido_tamaño = True
             else:
-                print("Recuerda que hay {} videos cargados".format(str(n)))
+                print("Recuerda que hay {} videos en la categoria".format(str(n)))
         print('Mostrar en pantalla los primeros:\n')
         ha_escogido_tamaño_mostrar = False
         while not ha_escogido_tamaño_mostrar:
@@ -354,3 +355,4 @@ los datos una vez de los archivos. \n Para recargar, reinicia la aplicación.')
 
 sys.exit(0)
         
+# falta pulir view, dejar bien hechos los nuevos, borrar los viejos si lo requieren

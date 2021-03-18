@@ -117,6 +117,10 @@ def sortVideos(tad_lista, metodo:str, orden:str):
 #antiguo:
 def subListVideos(catalog, pos, number):
     return model.subListVideos(catalog, pos, number)
+
+#nuevo
+def subListVideos2(lista, pos, number):
+    return model.subListVideos2(lista, pos, number)
 #antiguo:
 def subListVideos_porPais(tad_lista, pais):
     pais = pais.lower()
@@ -192,5 +196,8 @@ def subListVideos_porCategoria(catalog, categoria_id):
 #nuevo:
 def getMostLiked_porCategoria(catalog, categoria_id, n:int):
     videos_cate = subListVideos_porCategoria(catalog, categoria_id)
+    videos_cate = subListVideos2(videos_cate, 1, n)
+    videos_cate = ObtenerVideosDistintos(videos_cate)
     sortVideos(videos_cate, 'merge', 'likes')
     return videos_cate
+#quedó perfecta
