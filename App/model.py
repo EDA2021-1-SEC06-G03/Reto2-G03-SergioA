@@ -154,21 +154,33 @@ def primer_video(catalog):
 #antiguo
 def pais_presente(catalog, pais:str):
     return lt.isPresent(catalog['paises'], pais)
+#nuevo
+def categoria_presente(catalog, categoria_nombre:str):
+    nombre_presente = False
+    categoria_id = ''
+    for categoria in lt.iterator(mp.valueSet(catalog['VideosPorCategoriasId'])):
+        if categoria['nombre_categoria'] == categoria_nombre:
+            nombre_presente = True
+            categoria_id = categoria['categoria_id']
+            break
+    return (nombre_presente, categoria_id)
+
 #antiguo
-'''def categoria_id_presente(catalog, categoria_id:str):
-    id_presente = False
-    for categoria in lt.iterator(catalog['categorias']):
-        if categoria['id'] == categoria_id:
-            id_presente = True
-    return id_presente'''
-#antiguo
-def subListVideos_porCategoria(tad_lista, categoria_id:str):
+'''def subListVideos_porCategoria(tad_lista, categoria_id:str):
     sublist = lt.newList(datastructure = tad_lista['type'])
     for video in lt.iterator(tad_lista):
         
         if str(video['category_id']) == categoria_id:
             lt.addLast(sublist, video)
-    return sublist
+    return sublist'''
+
+#nuevo:
+def subListVideos_porCategoria(catalog, categoria_id:str):
+    categorias = catalog['VideosPorCategoriasId']
+    entry = mp.get(categorias, categoria_id)
+    videos = me.getValue(entry)['videos']
+    return videos
+
 #antiguo
 def subListVideos_porPais(tad_lista, pais:str):
     sublist = lt.newList(datastructure = tad_lista['type'])
@@ -235,7 +247,7 @@ def subListVideos_porTag(tad_lista, tag:str):
             lt.addLast(sublist, video)
     return sublist
 
-            
+
 
 
 

@@ -90,10 +90,10 @@ def loadCategorias(catalog):
         cate_agregar = {}
         info_deseada = ['id','name']
         for info in info_deseada:
-            cate_agregar[info] = str(cate_leida[info]).lower()
+            cate_agregar[info] = (str(cate_leida[info]).lower()).replace(' ', '')
         model.addCategoria(catalog, cate_agregar)
         
-
+#antiguo:
 def loadPaises(catalog):
     """
     Carga los distintos paises del archivo.
@@ -104,6 +104,7 @@ def loadPaises(catalog):
 
 
 # Funciones de ordenamiento
+#antiguo, 
 def sortVideos(tad_lista, metodo:str, orden:str):
     """
     Ordena los videos por views
@@ -113,10 +114,10 @@ def sortVideos(tad_lista, metodo:str, orden:str):
     model.sortList(tad_lista, metodo, orden)
 
 # Funciones de consulta sobre el catálogo
-
+#antiguo:
 def subListVideos(catalog, pos, number):
     return model.subListVideos(catalog, pos, number)
-
+#antiguo:
 def subListVideos_porPais(tad_lista, pais):
     pais = pais.lower()
     return model.subListVideos_porPais(tad_lista, pais)
@@ -125,7 +126,7 @@ def subListVideos_porPais(tad_lista, pais):
     categoria_id = str(categoria_id)
     return model.subListVideos_porCategoria(tad_lista, categoria_id)'''
 
-
+#antiguo:
 def getMostViewed(catalog, number, pais, categoria_id, metodo="merge"):
     """
     Primero organiza todos los videos por vistas 
@@ -142,18 +143,18 @@ def getMostViewed(catalog, number, pais, categoria_id, metodo="merge"):
     sortVideos(sublista, metodo, "vistas")
 
     return sublista
-
+#antiguo:
 def primer_video(catalog):
     return model.primer_video(catalog)
-
+#antiguo:
 def pais_presente(catalog, pais):
     return model.pais_presente(catalog, pais)
 
-'''def categoria_id_presente(catalog, categoria_id):
-    categoria_id = str(categoria_id)
-    return model.categoria_id_presente(catalog, categoria_id)'''
+def categoria_presente(catalog, categoria):
+    categoria = str(categoria).lower()
+    return model.categoria_presente(catalog, categoria)
 
-
+#antiguo:
 def ObtenerVideosDistintos(tad_lista):
     """
     Carga los distintos videos del archivo.
@@ -161,15 +162,15 @@ def ObtenerVideosDistintos(tad_lista):
     sortVideos(tad_lista, 'merge', "video_id")
     return model.ObtenerVideosDistintos(tad_lista)
 
-
+#antiguo:
 def getMostTrending(catalog, pais):
     sublista = subListVideos_porPais(catalog['videos'], pais)
     sublista = ObtenerVideosDistintos(sublista)
     return model.getMaxReps(sublista)
-
+#antiguo:
 def subListVideos_porTag(tad_lista, tag:str):
     return model.subListVideos_porTag(tad_lista, tag)
-
+#antiguo:
 def getMostLiked_porPaisyTags(catalog, number, pais, tag, metodo="merge"):
 
     sublista = subListVideos(catalog, 1, number)
@@ -183,3 +184,13 @@ def getMostLiked_porPaisyTags(catalog, number, pais, tag, metodo="merge"):
     sortVideos(sublista, metodo, "likes")  
 
     return sublista
+
+#nuevo:
+def subListVideos_porCategoria(catalog, categoria_id):
+    return model.subListVideos_porCategoria(catalog, categoria_id)
+
+#nuevo:
+def getMostLiked_porCategoria(catalog, categoria_id, n:int):
+    videos_cate = subListVideos_porCategoria(catalog, categoria_id)
+    sortVideos(videos_cate, 'merge', 'likes')
+    return videos_cate

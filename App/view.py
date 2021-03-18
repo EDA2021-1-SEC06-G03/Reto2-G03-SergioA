@@ -58,6 +58,9 @@ def printMenu():
     print("3- Consultar el video con mayor cantidad de dias de tendencia de un pais")
     print("4- Videos por categoria")
     print("5- Consultar top x videos por LIKES, dado el país y UN tag")
+
+    print('Reto 2:')
+    print('6- Consultar n videos con más likes en una categoria')
     print("0- Salir")
 
 catalog = None
@@ -121,7 +124,7 @@ while True:
 los datos una vez de los archivos. \n Para recargar, reinicia la aplicación.')
         
         
-
+    
     elif int(inputs[0]) == 2:
         n = lt.size(catalog['videos'])
         print("Buscando en el país: ")
@@ -304,9 +307,50 @@ los datos una vez de los archivos. \n Para recargar, reinicia la aplicación.')
                 break
         print('Milisegundos de carga :{}'.format(str((time_2-time_1)*1000)))
         
+    elif int(inputs[0]) == 6:
+        n = lt.size(catalog['videos'])
+        print("Buscando en la categoria con nombre: \n")
+        ha_escogido_categoria = False
+        while not ha_escogido_categoria:
+            categoria_nombre = input("")
+            id_presente = controller.categoria_presente(catalog, categoria_nombre)
+            if id_presente[0]:
+                ha_escogido_categoria = True
+                categoria_id = id_presente[1]
+            else:
+                print("Por favor ingresa una categoria disponible.")
+        print('Cuatos videos deseas procesar:\n')
+        ha_escogido_tamaño = False
+        while not ha_escogido_tamaño:
+            tamaño = int(input(""))
+            if tamaño <= n:
+                ha_escogido_tamaño = True
+            else:
+                print("Recuerda que hay {} videos cargados".format(str(n)))
+        print('Mostrar en pantalla los primeros:\n')
+        ha_escogido_tamaño_mostrar = False
+        while not ha_escogido_tamaño_mostrar:
+            tamaño_mostrar = int(input(""))
+            if tamaño_mostrar <= tamaño:
+                ha_escogido_tamaño_mostrar = True
+            else:
+                print("Recuerda que organizaras {} videos ".format(str(tamaño)))
+        time_1 = time.process_time()
+        mas_likeados = controller.getMostLiked_porCategoria(catalog, categoria_id, tamaño)
+        time_2 = time.process_time()
+        contador = 0
+        for video in lt.iterator(mas_likeados):
+            contador += 1
+            print(str(contador)+': '+'Titulo: '+(video['title']) + 'Likes: ' + str(video['likes']))
+            if contador >= tamaño_mostrar:
+                break
+        print('Milisegundos de carga :{}'.format(str((time_2-time_1)*1000)))
 
-
-
+        
+        
+    
     else:
         sys.exit(0)
+
 sys.exit(0)
+        
